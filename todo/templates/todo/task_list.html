@@ -1,0 +1,61 @@
+{% extends "todo/base.html" %}
+
+{% block content %}
+<h2>All Tasks</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Done</th>
+            <th>Created At</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for task in task %}
+        <tr>
+            <td>{{ task.title }}</td>
+            <td>{{ task.description }}</td>
+
+            <td>
+                <form method="POST" action="{% url 'todo:task_toggle' task.pk %}">
+
+                    {% csrf_token %}
+                    <button type="submit"
+                        class="btn btn-sm {% if task.completed %}btn-success{% else %}btn-secondary{% endif %}">
+                        {% if task.completed %}Done{% else %}Mark Done{% endif %}
+                    </button>
+                </form>
+
+            </td>
+
+            <td>{{ task.created_at|date:"M d, Y H:i" }}</td>
+
+            <td>
+                <a href="{% url 'todo:task_update' task.pk %}"
+                   class="btn btn-sm btn-warning">
+                    Edit
+                </a>
+
+                <a href="{% url 'todo:task_delete' task.pk %}"
+                   class="btn btn-sm btn-danger">
+                    Delete
+                </a>
+            </td>
+        </tr>
+
+        {% empty %}
+        <tr>
+            <td colspan="5">No tasks available yet.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+  <form method='post' action='{% url 'todo:logout' %}'>
+                            {% csrf_token %}
+                            <button type='submit' class='btn btn-outline-danger'>Logout</button>
+                        </form>
+{% endblock %}
